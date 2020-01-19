@@ -1,34 +1,23 @@
 package config
 
 import (
-	expressive "github.com/medis/go-expressive/internal"
+	AppInterface "github.com/medis/go-expressive/internal/App"
 	"github.com/medis/go-expressive/src/App"
 )
 
 type Config struct {
-	Apps   []*expressive.App
-	Routes []expressive.Route
+	Modules []AppInterface.AppInterface
 }
 
 func Load() *Config {
-	var apps []*expressive.App
+	var modules []AppInterface.AppInterface
 
-	apps = append(
-		apps,
+	modules = append(
+		modules,
 		App.NewApp(),
 	)
 
-	routes := mergeConfigs(apps)
 	return &Config{
-		Apps:   apps,
-		Routes: routes,
+		Modules: modules,
 	}
-}
-
-func mergeConfigs(apps []*expressive.App) []expressive.Route {
-	var routes []expressive.Route
-	for _, app := range apps {
-		routes = append(routes, app.Module.Routes...)
-	}
-	return routes
 }

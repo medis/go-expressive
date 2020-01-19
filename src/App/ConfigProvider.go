@@ -1,30 +1,28 @@
 package App
 
 import (
-	expressive "github.com/medis/go-expressive/internal"
+	"github.com/medis/go-expressive/internal/Route"
 	"github.com/medis/go-expressive/src/App/Handlers"
 )
 
-func NewApp() *expressive.App {
-	return &expressive.App{
-		Module: expressive.Module{
-			Dependencies: getDependencies(),
-			Routes:       getRoutes(),
-		},
-	}
+type App struct {
 }
 
-func getDependencies() []expressive.Dependency {
-	return []expressive.Dependency{
-		{
-			Invokables: "aa",
-			Factories:  "bb",
-		},
-	}
+func NewApp() *App {
+	return &App{}
 }
 
-func getRoutes() []expressive.Route {
-	return []expressive.Route{
+//func getDependencies() []config.Dependency {
+//	return []config.Dependency{
+//		{
+//			Invokables: "aa",
+//			Factories:  "bb",
+//		},
+//	}
+//}
+
+func (a *App) GetRoutes() []Route.Route {
+	return []Route.Route{
 		{
 			Path:    "/",
 			Name:    "home",

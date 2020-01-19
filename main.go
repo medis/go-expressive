@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/gorilla/mux"
-	"github.com/medis/go-expressive/config"
 	expressive "github.com/medis/go-expressive/internal"
 	"log"
 	"net/http"
@@ -22,12 +21,10 @@ func main() {
 }
 
 func run() error {
-	// Load config.
-	config := config.Load()
-
+	expressive := expressive.NewExpressive()
 	// Configure gorilla router.
 	r := mux.NewRouter()
-	expressive.RegisterRoutes(r, config.Routes)
+	expressive.RegisterRoutes(r)
 
 	// Make a channel to listen for an interrupt or terminate signal from the OS.
 	// Use a buffered channel because the signal package requires it.

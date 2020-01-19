@@ -4,9 +4,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func RegisterRoutes(r *mux.Router, routes []Route) {
-	for _, route := range routes {
-		r.HandleFunc(route.Path, route.Handler).
-			Methods(route.Method)
+func (e *Expressive) RegisterRoutes(r *mux.Router) {
+	for _, module := range e.Config.Modules {
+		for _, route := range module.GetRoutes() {
+			r.HandleFunc(route.Path, route.Handler).
+				Methods(route.Method)
+		}
 	}
 }
