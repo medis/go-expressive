@@ -1,21 +1,21 @@
 package App
 
 import (
-	module "github.com/medis/go-expressive/internal"
+	expressive "github.com/medis/go-expressive/internal"
 	"github.com/medis/go-expressive/src/App/Handlers"
 )
 
-func NewApp() *module.App {
-	return &module.App{
-		Module: module.Module{
+func NewApp() *expressive.App {
+	return &expressive.App{
+		Module: expressive.Module{
 			Dependencies: getDependencies(),
 			Routes:       getRoutes(),
 		},
 	}
 }
 
-func getDependencies() []module.Dependency {
-	return []module.Dependency{
+func getDependencies() []expressive.Dependency {
+	return []expressive.Dependency{
 		{
 			Invokables: "aa",
 			Factories:  "bb",
@@ -23,8 +23,8 @@ func getDependencies() []module.Dependency {
 	}
 }
 
-func getRoutes() []module.Route {
-	return []module.Route{
+func getRoutes() []expressive.Route {
+	return []expressive.Route{
 		{
 			Path:    "/",
 			Name:    "home",
