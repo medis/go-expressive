@@ -1,0 +1,6 @@
+server:
+  host: localhost
+  port: ":80"
+app:
+  secret: "app_secret"
+  shutdown_timeout: 5s

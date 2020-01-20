@@ -32,12 +32,14 @@ func run() error {
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	srv := &http.Server{
-		Addr:         ":80",
+		Addr:         expressive.Config.Server.Port,
 		Handler:      r,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
+
+	expressive.Logger.AppLog.Print("Starting server ...")
 
 	// Make a channel to listen for errors coming from the listener. Use a
 	// buffered channel so the goroutine can exit if we don't collect this error.
@@ -56,16 +58,16 @@ func run() error {
 		return err
 
 	case sig := <-shutdown:
-		log.Printf("%v : Start shutdown", sig)
+		expressive.Logger.AppLog.Printf("%v : Start shutdown", sig)
 
 		// Give outstanding requests a deadline for completion.
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), expressive.Config.App.ShutdownTime)
 		defer cancel()
 
 		// Asking listener to shutdown and load shed.
 		err := srv.Shutdown(ctx)
 		if err != nil {
-			log.Printf("Graceful shutdown did not complete in %v : %v", 30*time.Second, err)
+			expressive.Logger.AppLog.Printf("Graceful shutdown did not complete in %v : %v", expressive.Config.App.ShutdownTime, err)
 			err = srv.Close()
 		}
 
@@ -74,7 +76,7 @@ func run() error {
 		case sig == syscall.SIGSTOP:
 			return errors.New("integrity issue caused shutdown")
 		case err != nil:
-			log.Println("could not stop server gracefully")
+			expressive.Logger.AppLog.Println("could not stop server gracefully")
 			return err
 		}
 	}
