@@ -3,6 +3,7 @@ package App
 import (
 	"github.com/medis/go-expressive/internal/Route"
 	"github.com/medis/go-expressive/src/App/Handlers"
+	"github.com/medis/go-expressive/src/Middlewares"
 )
 
 type App struct {
@@ -26,13 +27,16 @@ func (a *App) GetRoutes() []Route.Route {
 		{
 			Path:    "/",
 			Name:    "home",
-			Handler: Handlers.Home,
-			Method:  "GET",
+			Handler: Handlers.NewHomeHandler(),
+			Middlewares: Route.Middlewares{
+				Middlewares.NewAccessLogMiddleware().Handler(),
+			},
+			Method: "GET",
 		},
 		{
 			Path:    "/ping",
 			Name:    "ping",
-			Handler: Handlers.Ping,
+			Handler: Handlers.NewPingHandler(),
 			Method:  "GET",
 		},
 	}

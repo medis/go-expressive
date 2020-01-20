@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
-func Ping(w http.ResponseWriter, r *http.Request) {
+type pingHandlerStruct struct{}
+
+func NewPingHandler() *pingHandlerStruct {
+	return &pingHandlerStruct{}
+}
+
+func (handler *pingHandlerStruct) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "pong")
 }

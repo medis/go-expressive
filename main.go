@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"errors"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
 	expressive "github.com/medis/go-expressive/internal"
 	"log"
 	"net/http"
@@ -23,7 +23,7 @@ func main() {
 func run() error {
 	expressive := expressive.NewExpressive()
 	// Configure gorilla router.
-	r := mux.NewRouter()
+	r := chi.NewRouter()
 	expressive.RegisterRoutes(r)
 
 	// Make a channel to listen for an interrupt or terminate signal from the OS.

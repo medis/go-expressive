@@ -1,14 +1,13 @@
 package expressive
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
 )
 
-func (e *Expressive) RegisterRoutes(r *mux.Router) {
+func (e *Expressive) RegisterRoutes(r *chi.Mux) {
 	for _, module := range e.Config.Modules {
 		for _, route := range module.GetRoutes() {
-			r.HandleFunc(route.Path, route.Handler).
-				Methods(route.Method)
+			r.With(route.Middlewares...).Method(route.Method, route.Path, route.Handler)
 		}
 	}
 }
