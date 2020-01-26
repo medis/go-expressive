@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/kelseyhightower/envconfig"
 	AppInterface "github.com/medis/go-expressive/internal/App"
+	"github.com/medis/go-expressive/internal/Template"
 	"github.com/medis/go-expressive/src/App"
 	"gopkg.in/yaml.v2"
 	"os"
@@ -11,7 +12,7 @@ import (
 )
 
 type Config struct {
-	Modules []AppInterface.AppInterface
+	Modules map[string]AppInterface.AppInterface
 	Server  struct {
 		Host string `yaml:"host" envconfig:"SERVER_HOST"`
 		Port string `yaml:"port" envconfig:"SERVER_PORT"`
@@ -22,14 +23,14 @@ type Config struct {
 	}
 }
 
-func Load() *Config {
+func Load(template *Template.Template) *Config {
 	cfg := Config{}
 	// Read config file.
 	readConfig(&cfg)
 	// Overwrite with env variables.
 	readEnv(&cfg)
 	// Register modules.
-	loadModules(&cfg)
+	loadModules(&cfg, template)
 
 	return &cfg
 }
@@ -61,9 +62,11 @@ func readEnv(cfg *Config) {
 	}
 }
 
-func loadModules(cfg *Config) {
-	cfg.Modules = append(
-		[]AppInterface.AppInterface{},
-		App.NewApp(),
-	)
+func loadModules(cfg *Config, template *Template.Template) {
+	cfg.Modules = map[string]AppInterface.AppInterface{}
+	cfg.Modules["App"] = App.NewApp(template)
+	//cfg.Modules = append(
+	//	[]AppInterface.AppInterface{},
+	//	App.NewApp(),
+	//)
 }

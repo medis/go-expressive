@@ -1,16 +1,29 @@
 package Handlers
 
 import (
-	"fmt"
+	"github.com/medis/go-expressive/internal/Template"
 	"net/http"
 )
 
-type homeHandlerStruct struct{}
+type homeHandlerStruct struct{
+	template *Template.Template
+}
 
-func NewHomeHandler() *homeHandlerStruct {
-	return &homeHandlerStruct{}
+func NewHomeHandler(template *Template.Template) *homeHandlerStruct {
+	return &homeHandlerStruct{
+		template: template,
+	}
 }
 
 func (handler *homeHandlerStruct) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world")
+	output, err := handler.template.Render("App.home.page.gohtml")
+	if err != nil {
+		//Server.ServerError(a.errorLog, w, err)
+		w.Write([]byte("error"))
+	}
+
+	_, err = output.WriteTo(w)
+	if err != nil {
+		w.Write([]byte("error"))
+	}
 }

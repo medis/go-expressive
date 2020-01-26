@@ -4,7 +4,8 @@ import (
 	"github.com/go-chi/chi"
 	chi_middleware "github.com/go-chi/chi/middleware"
 	"github.com/medis/go-expressive/config"
-	expressive_middleware "github.com/medis/go-expressive/internal/Middlewares"
+	"github.com/medis/go-expressive/internal/Template"
+	app_middleware "github.com/medis/go-expressive/src/Middlewares"
 	"log"
 	"os"
 	"time"
@@ -19,16 +20,25 @@ type Expressive struct {
 	*Logger
 	Router *chi.Mux
 	Config *config.Config
+	Template *Template.Template
 }
 
 func NewExpressive() *Expressive {
 	expressive := &Expressive{}
-	expressive.Config = config.Load()
+
+	template, err := Template.NewTemplate()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	expressive.Template = template
 	expressive.Logger = initLoggers()
 	expressive.Router = chi.NewRouter()
 
+	expressive.Config = config.Load(template)
+
 	expressive.registerGlobalMiddlewares()
 	expressive.registerRoutes()
+
 
 	return expressive
 }
@@ -59,6 +69,6 @@ func (e *Expressive) registerGlobalMiddlewares() {
 		chi_middleware.Recoverer,
 		chi_middleware.Timeout(60*time.Second),
 		chi_middleware.GetHead,
-		expressive_middleware.SecureHeaders,
+		app_middleware.SecureHeaders,
 	)
 }
