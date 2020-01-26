@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"github.com/go-chi/chi"
 	expressive "github.com/medis/go-expressive/internal"
 	"log"
 	"net/http"
@@ -22,9 +21,6 @@ func main() {
 
 func run() error {
 	expressive := expressive.NewExpressive()
-	// Configure gorilla router.
-	r := chi.NewRouter()
-	expressive.RegisterRoutes(r)
 
 	// Make a channel to listen for an interrupt or terminate signal from the OS.
 	// Use a buffered channel because the signal package requires it.
@@ -33,7 +29,7 @@ func run() error {
 
 	srv := &http.Server{
 		Addr:         expressive.Config.Server.Port,
-		Handler:      r,
+		Handler:      expressive.Router,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
