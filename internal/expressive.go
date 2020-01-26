@@ -2,9 +2,11 @@ package expressive
 
 import (
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/medis/go-expressive/config"
 	"log"
 	"os"
+	"time"
 )
 
 type Logger struct {
@@ -24,6 +26,7 @@ func NewExpressive() *Expressive {
 	expressive.Logger = initLoggers()
 	expressive.Router = chi.NewRouter()
 
+	expressive.registerGlobalMiddlewares()
 	expressive.registerRoutes()
 
 	return expressive
@@ -44,4 +47,16 @@ func (e *Expressive) registerRoutes() {
 			e.Router.With(route.Middlewares...).Method(route.Method, route.Path, route.Handler)
 		}
 	}
+}
+
+// Register global middlewares that apply to all routes.
+func (e *Expressive) registerGlobalMiddlewares() {
+	e.Router.Use(
+		middleware.RequestID,
+		middleware.RealIP,
+		middleware.Logger,
+		middleware.Recoverer,
+		middleware.Timeout(60*time.Second),
+		middleware.GetHead,
+	)
 }
