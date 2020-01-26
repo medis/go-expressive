@@ -2,8 +2,9 @@ package expressive
 
 import (
 	"github.com/go-chi/chi"
-	"github.com/go-chi/chi/middleware"
+	chi_middleware "github.com/go-chi/chi/middleware"
 	"github.com/medis/go-expressive/config"
+	expressive_middleware "github.com/medis/go-expressive/internal/Middlewares"
 	"log"
 	"os"
 	"time"
@@ -52,11 +53,12 @@ func (e *Expressive) registerRoutes() {
 // Register global middlewares that apply to all routes.
 func (e *Expressive) registerGlobalMiddlewares() {
 	e.Router.Use(
-		middleware.RequestID,
-		middleware.RealIP,
-		middleware.Logger,
-		middleware.Recoverer,
-		middleware.Timeout(60*time.Second),
-		middleware.GetHead,
+		chi_middleware.RequestID,
+		chi_middleware.RealIP,
+		chi_middleware.Logger,
+		chi_middleware.Recoverer,
+		chi_middleware.Timeout(60*time.Second),
+		chi_middleware.GetHead,
+		expressive_middleware.SecureHeaders,
 	)
 }
