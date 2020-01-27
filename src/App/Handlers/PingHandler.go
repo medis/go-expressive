@@ -2,6 +2,7 @@ package Handlers
 
 import (
 	"fmt"
+	logwrapper "github.com/medis/go-expressive/internal/Logwrapper"
 	"net/http"
 )
 
@@ -12,5 +13,6 @@ func NewPingHandler() *pingHandlerStruct {
 }
 
 func (handler *pingHandlerStruct) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	logwrapper.GetLogEntry(r).Errorf("hi from ping")
 	fmt.Fprintf(w, "pong")
 }

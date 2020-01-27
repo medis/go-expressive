@@ -4,22 +4,22 @@ import (
 	"github.com/go-chi/chi"
 	chi_middleware "github.com/go-chi/chi/middleware"
 	"github.com/medis/go-expressive/config"
+	logwrapper "github.com/medis/go-expressive/internal/Logwrapper"
 	"github.com/medis/go-expressive/internal/Template"
 	app_middleware "github.com/medis/go-expressive/src/Middlewares"
 	"log"
-	"os"
 	"time"
 )
 
 type Logger struct {
-	AccessLog log.Logger
-	AppLog    log.Logger
+	ContextLog chi_middleware.LogFormatter
+	InfoLog    *logwrapper.StandardLogger
 }
 
 type Expressive struct {
 	*Logger
-	Router *chi.Mux
-	Config *config.Config
+	Router   *chi.Mux
+	Config   *config.Config
 	Template *Template.Template
 }
 
@@ -39,15 +39,14 @@ func NewExpressive() *Expressive {
 	expressive.registerGlobalMiddlewares()
 	expressive.registerRoutes()
 
-
 	return expressive
 }
 
 // Initialise loggers.
 func initLoggers() *Logger {
 	return &Logger{
-		AccessLog: *log.New(os.Stdout, "", log.Ldate|log.Ltime),
-		AppLog:    *log.New(os.Stderr, "", log.Ldate|log.Ltime|log.Lshortfile),
+		ContextLog: logwrapper.NewStructuredLogger(),
+		InfoLog:    logwrapper.NewLogger(),
 	}
 }
 
@@ -65,7 +64,7 @@ func (e *Expressive) registerGlobalMiddlewares() {
 	e.Router.Use(
 		chi_middleware.RequestID,
 		chi_middleware.RealIP,
-		chi_middleware.Logger,
+		chi_middleware.RequestLogger(e.Logger.ContextLog),
 		chi_middleware.Recoverer,
 		chi_middleware.Timeout(60*time.Second),
 		chi_middleware.GetHead,
