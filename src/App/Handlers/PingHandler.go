@@ -1,18 +1,18 @@
 package Handlers
 
 import (
-	"fmt"
-	logwrapper "github.com/medis/go-expressive/internal/Logwrapper"
+	"github.com/medis/go-expressive/internal/Response"
 	"net/http"
 )
 
-type pingHandlerStruct struct{}
+type PingHandler struct{}
 
-func NewPingHandler() *pingHandlerStruct {
-	return &pingHandlerStruct{}
+func NewPingHandler() *PingHandler {
+	return &PingHandler{}
 }
 
-func (handler *pingHandlerStruct) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	logwrapper.GetLogEntry(r).Errorf("hi from ping")
-	fmt.Fprintf(w, "pong")
+func (handler *PingHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	//logwrapper.GetLogEntry(r).Errorf("hi from ping")
+	headers := make(map[string]string)
+	Response.JsonResponse("Pong", w, 200, headers)
 }

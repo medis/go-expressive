@@ -1,6 +1,7 @@
 package App
 
 import (
+	"github.com/medis/go-expressive/di"
 	"github.com/medis/go-expressive/internal/Route"
 	"github.com/medis/go-expressive/internal/Template"
 	"github.com/medis/go-expressive/src/App/Handlers"
@@ -40,7 +41,7 @@ func (a *App) GetRoutes() []Route.Route {
 		{
 			Path:    "/ping",
 			Name:    "ping",
-			Handler: Handlers.NewPingHandler(),
+			Handler: di.InitialisePingHandler(),
 			Method:  "GET",
 		},
 	}
